@@ -1,0 +1,38 @@
+# Este archivo YAML define la automatización de GitHub Actions para un proyecto Python.
+
+name: Python App CI/CD  # Nombre descriptivo para el flujo de trabajo
+
+on:
+  push:
+    branches:
+      - main  # Desencadenar el flujo de trabajo en cada push a la rama principal
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Entorno de ejecución: Ubuntu
+
+    steps:
+    - name: Checkout Repository  # Paso para descargar el repositorio
+      uses: actions/checkout@v2  # Utiliza la acción de GitHub para checkout
+
+    - name: Set up Python 3.x  # Configuración de Python
+      uses: actions/setup-python@v2  # Utiliza la acción para configurar Python
+      with:
+        python-version: 3.x  # Configura la versión de Python (puedes cambiar a la versión que necesites)
+
+    - name: Install dependencies  # Instalación de dependencias
+      run: |
+        python -m pip install --upgrade pip  # Actualiza pip
+        pip install -r requirements.txt  # Instala las dependencias del proyecto desde requirements.txt
+
+    - name: Run Tests  # Ejecuta las pruebas
+      run: |
+        python -m pytest -vv  # Ejecuta las pruebas con pytest y muestra una salida detallada
+
+    - name: Code Formatting  # Formateo de código
+      run: |
+        black .  # Utiliza black para formatear el código
+
+    - name: Linting  # Linting del código
+      run: |
+        pylint --disable=R,C .  # Ejecuta pylint para realizar análisis estático y desactiva ciertos mensajes (R: Refactor, C: Convention)
